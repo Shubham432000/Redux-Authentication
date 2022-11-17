@@ -1,93 +1,104 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { loginData } from "../action/Action";
-
+import { logIn } from "../action/Action";
+import { useSelector } from "react-redux";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const account = useSelector((state) => state.account);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const dispatch = useDispatch();
-  const detectSignup = useSelector((state) => state.changeSignupData.account);
-  let navigat = useNavigate();
-
- // console.log("data coming from signup", detectSignup.payload.email);
- // console.log("compare data",(detectSignup));
-  const validatedata = () => {
-    if (email == "") {
-      alert("please enter valid email");
+  const validateData = () => {
+    if (!email) {
+      toast.warn("Please Enter Valid Email !", {
+        position: toast.POSITION.TOP_CENTER
+      });
       return false;
     }
-    if (password == "") {
-      alert("please enter valid password");
+    if (!password) {
+      toast.warn("Please Enter Password !", {
+        position: toast.POSITION.TOP_CENTER
+      });
       return false;
-    } else if (password.length < 6) {
-      alert("please enter minimum 6 digit");
     }
+    if (password.length < 6) {
+      toast.warn("Please Enter Minimum 6 digit Password !", {
+        position: toast.POSITION.TOP_CENTER
+      });
+      return false;
+    }
+    if (email === account.email && password === account.password) {
+      // alert("Login Succecfully");
 
-    
-    if (email === detectSignup.payload.email && password === detectSignup.payload.password) {
-     
-       alert("Login Succecfully");
-       navigat("/home")
+      toast.success(` ${account.name} your Login succesfully`, {
+        position: toast.POSITION.TOP_CENTER,
+      });
       return true;
     } else {
-      alert("wrong crendential")
+      toast.error("Wrong Crendiential !", {
+        position: toast.POSITION.TOP_CENTER
+      });
       return false;
     }
+    
   };
+
   function submitForm(e) {
     e.preventDefault();
 
-    if (validatedata()) {
+    if (validateData()) {
       dispatch(
-        loginData({
-          email:email,
-          password:password
-        }) 
+        logIn({
+          email,
+          password,
+        })
       );
-     
+      navigate("/home");
     }
   }
-
-
   return (
-    <section>
-      <form action="" onSubmit={submitForm}>
-        <div className="bg-slate-50 shadow-2xl shadow-slate-400 border border-indigo-600 w-[300px] h-[350px] ml-[500px] mt-[100px]">
-          <h1 className="text-center mt-2">Login</h1>
-          <div className="flex flex-col justify-center ml-[50px]">
-            <label htmlFor="" className="mt-[20px]">
-              Email Id
-            </label>
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-[200px] h-[30px] mt-[5px] border border-indigo-600 pl-2"
-            />
-            <label htmlFor="" className="mt-[20px]">
-              Password
-            </label>
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-[200px] h-[30px] mt-[5px] border border-indigo-600 pl-2"
-            />
+    <>
+      <section>
+        <form action="" onSubmit={submitForm}>
+          <div className="bg-slate-50 shadow-2xl shadow-slate-400 border border-indigo-600 w-[300px] h-[350px] ml-[500px] mt-[100px]">
+            <h1 className="text-center mt-2">Login</h1>
+            <div className="flex flex-col justify-center ml-[50px]">
+              <label htmlFor="" className="mt-[20px]">
+                Email Id
+              </label>
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-[200px] h-[30px] mt-[5px] border border-indigo-600 pl-2"
+              />
+              <label htmlFor="" className="mt-[20px]">
+                Password
+              </label>
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-[200px] h-[30px] mt-[5px] border border-indigo-600 pl-2"
+              />
+            </div>
+            <button className="ml-[120px] mt-[60px] border border-indigo-600 px-2 py-1 text-white bg-indigo-600 hover:bg-white hover:text-indigo-600">
+              Submit
+            </button>
+            <ToastContainer />
           </div>
-          <button  className="ml-[120px] mt-[60px] border border-indigo-600 px-2 py-1 text-white bg-indigo-600 hover:bg-white hover:text-indigo-600">
-            Submit
-          </button>
-        </div>
-      </form>
-    </section>
+        </form>
+      </section>
+    </>
   );
 };
 
 export default Login;
-
-// onClick={()=> {dispatch(employessData({email:email,password:password}))}}

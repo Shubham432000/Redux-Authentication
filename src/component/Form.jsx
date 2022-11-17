@@ -3,6 +3,10 @@ import { useDispatch } from "react-redux";
 import { formData } from "../action/Action";
 import { useNavigate } from "react-router-dom";
 const Form = () => {
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
   const [first, setFirst] = useState("");
   const [last, setLast] = useState("");
   const [add1, setAdd1] = useState("");
@@ -12,50 +16,43 @@ const Form = () => {
   const [gender, setGender] = useState("");
   const [mart, setMart] = useState("");
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  
+
+  let date = new Date();
+  let id = date.getTime();
   const validatedata = () => {
-    if (first === "") {
+    if (!first) {
       alert("enter valid name");
       return false;
     }
-    if (last === "") {
+    if (!last) {
       alert("enter valid last name");
       return false;
     }
-    if (add1 === "") {
+    if (!add1) {
       alert("enter valid address");
       return false;
     }
-    // if (mob === "") {
-    //   alert("enter valid number");
-    //   return false;
-    // } else if (mob > 10) {
-    //   alert("enter 10 digit mobile number");
-    //   return false;
-    // }
+    if (!mob ) {
+      alert("enter valid number");
+      return false;
+    }
 
-    // if (pan === "") {
-    //   alert("enter valid pan number");
-    //   return false;
-    // } else if (pan >= 10) {
-    //   alert("enter 10 digit pan number");
-    // }
+    if (!pan ) {
+      alert("enter valid pan number");
+      return false;
+    } 
 
-    if (gender === "") {
+    if (!gender) {
       alert("enter valid gender");
       return false;
     }
-    if (mart === "") {
+    if (!mart) {
       alert("enter valid martiual status");
       return false;
     }
 
-    if (first && last && add1 && mob && pan && gender && mart) {
-      return true;
-    } else {
-      return false;
-    }
+    return true;
   };
 
   const Data = (e) => {
@@ -65,16 +62,17 @@ const Form = () => {
     if (validatedata()) {
       dispatch(
         formData({
-         first:first,
-         last:last,
-         add1:add1,
-         add2,add2,
-         mob:mob,
-         pan:pan,
-         gender:gender,
-         mart:mart
+          id,
+          first,
+          last,
+          add1,
+          add2,
+          mob,
+          pan,
+          gender,
+          mart
         })
-      )
+      );
       navigate("/employee");
     }
   };
